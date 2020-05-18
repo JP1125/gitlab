@@ -1,0 +1,28 @@
+concurrent = 1
+check_interval = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "gitlab-runner-dind"
+  url = "http://gitlab.example/"
+  token = ""
+  executor = "docker"
+  environment = ["DOCKER_TLS_CERTDIR=/certs/client", "DOCKER_HOST=unix:///var/run/docker.sock"]
+  [runners.custom_build_dir]
+  [runners.docker]
+    tls_verify = false
+    image = "docker:19.03.1"
+    privileged = true
+    disable_entrypoint_overwrite = false
+    oom_kill_disable = false
+    disable_cache = false
+    volumes = ["/certs/client", "/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+    extra_hosts = ["gitlab.example:192.168.80.2", "gitlab-runner.example:192.168.80.3"]
+    network_mode = "repo_gitlab_net"
+    shm_size = 0
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+
